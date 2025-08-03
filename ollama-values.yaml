@@ -54,5 +54,5 @@ ui:
 
 persistentVolume:
   enabled: true
-  storageClass: default
+  storageClass: microk8s-hostpath 
   size: 20Gi
