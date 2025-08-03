@@ -25,10 +25,6 @@ nodeSelector:
   kubernetes.io/hostname: mini-node-gpu1
 
 # Enable and configure GPU support
-tolerations:
-  - key: "nvidia.com/gpu"
-    operator: "Exists"
-    effect: "NoSchedule"
 
 ui:
   enabled: true
