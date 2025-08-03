@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ollama-ui-ingress
+  namespace: ollama
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-prod"
+spec:
+  rules:
+    - host: mini-ollama.scrappybots.org
+      http:
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: ollama-ui
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - mini-ollama.scrappybots.org
+      secretName: mini-ollama-cert
