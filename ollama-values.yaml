@@ -1,0 +1,58 @@
+replicaCount: 1
+
+# Ollama Image
+image:
+  repository: ollama/ollama
+  tag: latest
+
+# Model selection
+llm:
+  models:
+    - gemma2:2b   # Recommended model for Jetson Orin Nano
+
+resources:
+  requests:
+    cpu: "1000m"
+    memory: "2Gi"
+    nvidia.com/gpu: 1
+  limits:
+    cpu: "2000m"
+    memory: "4Gi"
+    nvidia.com/gpu: 1
+
+# Target only your Jetson node
+nodeSelector:
+  kubernetes.io/hostname: mini-node-gpu1
+
+# Enable and configure GPU support
+tolerations:
+  - key: "nvidia.com/gpu"
+    operator: "Exists"
+    effect: "NoSchedule"
+
+ui:
+  enabled: true
+  replicaCount: 1
+  ingress:
+    enabled: true
+    className: public
+    hosts:
+      - host: mini-ollama.scrappybots.org
+        paths:
+          - path: /
+            pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - mini-ollama.scrappybots.org
+        secretName: mini-ollama-cert # Must match below in ArgoCD/Ingress
+    annotations:
+      cert-manager.io/cluster-issuer: "letsencrypt-prod"  # Matches your cert-manager setup
+
+  service:
+    type: ClusterIP
+    port: 80
+
+persistentVolume:
+  enabled: true
+  storageClass: default
+  size: 20Gi
